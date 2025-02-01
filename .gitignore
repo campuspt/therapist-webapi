@@ -1,0 +1,10 @@
+/env
+/therapist-webapi/env
+therapist-webapi/env
+**/__pycache__/*
+/obj
+/static
+.vs/
+therapist-webapi/obj/
+therapist-webapi/env
+therapist-webapi/static

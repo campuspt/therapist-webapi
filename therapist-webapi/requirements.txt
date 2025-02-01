@@ -1,0 +1,6 @@
+django>=3.2.14
+mysqlclient>=2.2.0
+djangorestframework>=3.14.0
+secure-smtplib>=0.1.1 
+pytz>=2024.1
+cryptography>=41.0.7
