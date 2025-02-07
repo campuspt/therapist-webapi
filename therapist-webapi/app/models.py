@@ -25,6 +25,9 @@ class Country(models.Model):
     code = models.CharField(max_length=3)
     name = models.CharField(max_length=45)
     
+    class Meta:
+            managed = False  # Evita que Django intente migrarla
+            
     def __str__(self) -> str:
       return self.name + " (" + self.code + ")"
 
@@ -43,6 +46,9 @@ class State(models.Model):
     timezone = models.CharField(max_length=45)
     country = models.ForeignKey(Country, on_delete=models.CASCADE)
     
+    class Meta:
+            managed = False  # Evita que Django intente migrarla
+            
     def __str__(self) -> str:
       return self.name + " (" + self.abbreviation + ")"
 
@@ -60,6 +66,10 @@ class City(models.Model):
     location_latitude = models.DecimalField(decimal_places=0, max_digits=9)
     location_longitude = models.DecimalField(decimal_places=0, max_digits=9)
     
+    
+    class Meta:
+            managed = False  # Evita que Django intente migrarla
+            
     def __str__(self) -> str:
       return self.name + " (" + self.state.name + ")"
 
@@ -67,6 +77,7 @@ class Location(models.Model):
     
     class Meta:
             db_table = "location"
+            managed = False  # Evita que Django intente migrarla
     
     location_id = models.AutoField(primary_key=True)
     address = models.CharField(max_length=250)
@@ -90,6 +101,9 @@ class Contact(models.Model):
     ext = models.CharField(max_length=4, blank=True, null=True)
     is_fax = models.BooleanField(default=False)
     
+    class Meta:
+            managed = False  # Evita que Django intente migrarla
+            
     def __str__(self) -> str:
       return self.phone_number + " (" + self.contact_name + ")"
   
@@ -99,10 +113,11 @@ class Contact(models.Model):
 class Email(models.Model):
       email_id = models.AutoField(primary_key=True)
       value = models.CharField(max_length=100)
-      
+            
       class Meta:
             db_table = "email"
             ordering = ['value']
+            managed = False  # Evita que Django intente migrarla
             
 class Therapist(Audit_Fields):
     id = models.AutoField(primary_key=True)
@@ -115,6 +130,7 @@ class Therapist(Audit_Fields):
         
     class Meta:
             db_table = "therapist"
+            managed = False  # Evita que Django intente migrarla
             
     def __str__(self) -> str:
       return "{} ({}) - {}".format(self.name,self.title, 'ACTIVE' if self.active else 'INACTIVE')
@@ -129,33 +145,52 @@ class Therapist_Attribute(Audit_Fields):
         
     class Meta:
             db_table = "therapist_attribute"
+            managed = False  # Evita que Django intente migrarla
             
     def __str__(self) -> str:
       return "{} ({}={})/{} - {}".format(self.therapist.name,self.name,self.value,self.type, 'ACTIVE' if self.active else 'INACTIVE')
   
 class Therapist_Location(Audit_Fields):
     id = models.AutoField(primary_key=True)
-    therapist = models.ForeignKey(Therapist, on_delete=models.DO_NOTHING)
-    location = models.ForeignKey(Location, on_delete=models.DO_NOTHING)
+    therapist_id = models.IntegerField()  
+    location_id = models.IntegerField()  
     active = models.BooleanField(default=True)
     is_primary = models.BooleanField(default=False)
     visible = models.BooleanField(default=True)
-        
+
+    @property
+    def therapist(self): return Therapist.objects.filter(id = self.therapist_id).first()
+
+    @property
+    def location(self): return Location.objects.filter(location_id = self.location_id).first()
+    
 class Therapist_Contact(Audit_Fields):
     id = models.AutoField(primary_key=True)
-    therapist = models.ForeignKey(Therapist, on_delete=models.DO_NOTHING)
-    contact = models.ForeignKey(Contact, on_delete=models.DO_NOTHING)
+    therapist_id = models.IntegerField()  
+    contact_id = models.IntegerField()  
     active = models.BooleanField(default=True)
     is_primary = models.BooleanField(default=False)
     visible = models.BooleanField(default=True)
+    
+    @property
+    def therapist(self): return Therapist.objects.filter(id = self.therapist_id).first()
+
+    @property
+    def contact(self): return Contact.objects.filter(contact_id = self.contact_id).first()
         
 class Therapist_Email(Audit_Fields):
     id = models.AutoField(primary_key=True)
-    therapist = models.ForeignKey(Therapist, on_delete=models.DO_NOTHING)
-    email = models.ForeignKey(Email, on_delete=models.DO_NOTHING)
+    therapist_id = models.IntegerField()  
+    email_id = models.IntegerField()  
     active = models.BooleanField(default=True)
     is_primary = models.BooleanField(default=False)
     visible = models.BooleanField(default=True)
+    
+    @property
+    def therapist(self): return Therapist.objects.filter(id = self.therapist_id).first()
+
+    @property
+    def email(self): return Email.objects.filter(email_id = self.email_id).first()
         
         
 class Therapist_Invitation(Audit_Fields):
@@ -166,13 +201,13 @@ class Therapist_Invitation(Audit_Fields):
         ('revoked', 'Revoked'),
     ]
     
-    models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     first_name = models.CharField(max_length=250)
     last_name = models.CharField(max_length=250)
     npi = models.CharField(max_length=15)
     email = models.CharField(max_length=250)
     phone = models.CharField(max_length=25)
-    url = models.CharField(max_length=5000)
+    url = models.CharField(max_length=5000, null=True)
     company_id = models.IntegerField()
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
     sent_at = models.DateTimeField(auto_now_add=True)

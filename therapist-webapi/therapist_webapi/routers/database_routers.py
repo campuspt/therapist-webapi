@@ -3,7 +3,7 @@ from ..settings import DATABASES
 
 class CampusPTRouter:
     database_alias_name = 'campuspt_db'
-    campuspt_tables = ['contact','location','email','city','country_states','country']
+    campuspt_tables = ['contact','location','email','city','State','country','country_states','therapist','therapist','therapist_attribute']
 
     def db_for_read(self, model, **hints):
         """
@@ -22,9 +22,6 @@ class CampusPTRouter:
         return None
 
     def allow_migrate(self, db, app_label, model_name=None, **hints):
-        """
-        Ensures migrations for `Therapist_Attribute` occur only in the correct database.
-        """
-        if model_name in self.campuspt_tables:
-            return db == self.database_alias_name  # Make sure migrations are only applied to 'other_database'
-        return None
+        if db == self.database_alias_name:
+            return False  # No permitir migraciones en esta base de datos
+        return None  # Usar el comportamiento por defecto

@@ -1,5 +1,6 @@
 
 import base64
+import uuid
 from django.utils import timezone
 from app.models import Audit_Fields
 from therapist_webapi.settings import DATABASES, ENCRYPT_KEY
@@ -55,6 +56,14 @@ def decode_base64_file(file_base64):
     format, imgstr = file_base64.split(';base64,') 
     ext = format.split('/')[-1]
     return base64.b64decode(imgstr), ext
+
+
+def is_uuid4(string):
+    try:
+        val = uuid.UUID(string, version=4)
+        return str(val) == string  # Ensures it's a valid UUID4 format
+    except ValueError:
+        return False
 
 class WebInfo:
     def __init__(self, request) -> None:

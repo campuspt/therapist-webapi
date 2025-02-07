@@ -6,6 +6,7 @@ from therapist_webapi.settings import API_SECRET_KEY
 class APIKeyAuthentication(BaseAuthentication):
     
     def authenticate(self, request):
+        print(request.headers)
         api_key = request.headers.get('X-API-KEY')
         company = request.COOKIES.get('company', None)
         if api_key != API_SECRET_KEY:
