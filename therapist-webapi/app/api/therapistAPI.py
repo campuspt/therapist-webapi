@@ -30,7 +30,7 @@ class TherapistAPI(APIView):
                     name=data.get('first_name'),
                     last_name=data.get('last_name'),
                     title=data.get('title'),
-                    user_id=User
+                    user_id=User.objects.using('campuspt_db').filter('username')
                     )
             
             return  Response(to_return, status=status.HTTP_200_OK)
