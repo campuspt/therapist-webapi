@@ -3,7 +3,17 @@ from ..settings import DATABASES
 
 class CampusPTRouter:
     database_alias_name = 'campuspt_db'
-    campuspt_tables = ['contact','location','email','city','State','country','country_states','therapist','therapist','therapist_attribute']
+    campuspt_tables = ['contact',
+                       'location',
+                       'email',
+                       'city',
+                       'State',
+                       'country',
+                       'country_states',
+                       'therapist',
+                       'therapist',
+                       'therapist_attribute', 
+                       'auth_user']
 
     def db_for_read(self, model, **hints):
         """

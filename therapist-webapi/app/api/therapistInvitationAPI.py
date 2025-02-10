@@ -21,7 +21,6 @@ class TherapistInvitationAPI(APIView):
 
     def post(self, request):
         web = WebInfo(request)
-        company_id = int(request.COOKIES['company'])
         try:
             to_return = []
             data = request.data
@@ -34,17 +33,16 @@ class TherapistInvitationAPI(APIView):
 
     def get(self, request):
         web = WebInfo(request)
-        company_id = int(request.COOKIES['company'])
         try:
             to_return = []
             data = request.data
-            search = request.GET.get('search', None)
+            search = request.GET.get('uuid', None)
             index = request.GET.get('index', 1)
             page = request.GET.get('page', 25)
             obj = self.invitationService.find(search, index, page, web)
-            return  Response(TherapistInvitationSerializer(obj, many=True).data, status=status.HTTP_200_OK)
+            return  Response(TherapistInvitationSerializer(obj, many=False).data, status=status.HTTP_200_OK)
 
-        except ValueError | Exception as e:
+        except Exception as e:
             self.logger.error("error", e)
             if isinstance(e, ValueError):
                 return Response({'result': {'message':f'Validation: {str(e)}.'}}, status=status.HTTP_400_BAD_REQUEST)

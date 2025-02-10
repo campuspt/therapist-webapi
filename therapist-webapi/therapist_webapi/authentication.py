@@ -6,12 +6,9 @@ from therapist_webapi.settings import API_SECRET_KEY
 class APIKeyAuthentication(BaseAuthentication):
     
     def authenticate(self, request):
-        print(request.headers)
         api_key = request.headers.get('X-API-KEY')
-        company = request.COOKIES.get('company', None)
-        if api_key != API_SECRET_KEY:
-            raise AuthenticationFailed('Invalid API key')
-        
-        if not company: raise AuthenticationFailed('Invalid Company')
+        print(api_key)
+        print(API_SECRET_KEY)
+        if api_key != API_SECRET_KEY: raise AuthenticationFailed('Invalid API key')
         
         return (AnonymousUser(), None)  # You can return a user object here if needed

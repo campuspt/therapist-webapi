@@ -30,6 +30,7 @@ ALLOWED_HOSTS = ['*']
 # Application references
 # https://docs.djangoproject.com/en/2.1/ref/settings/#std:setting-INSTALLED_APPS
 INSTALLED_APPS = [
+    'corsheaders',
     'app',
     # Add your apps here to enable them
     'django.contrib.admin',
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
 # Middleware framework
 # https://docs.djangoproject.com/en/2.1/topics/http/middleware/
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Add this at the top
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -52,6 +54,27 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # Allow React frontend
+]
+
+CORS_ALLOW_CREDENTIALS = True  # Allow cookies
+
+CORS_ALLOW_HEADERS = [
+    "authorization",
+    "content-type",
+    "x-api-key",
+]
+
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    # "PUT",
+    # "PATCH",
+    # "DELETE",
+    "OPTIONS"
+]
+
 ROOT_URLCONF = 'therapist_webapi.urls'
 
 
@@ -59,7 +82,7 @@ ROOT_URLCONF = 'therapist_webapi.urls'
 ENCRYPT_KEY='xOTMiZhMBTWTR8tWbNkifWcCAlBAiWnAboomokIB3-g='
 
 # API Secret Key
-API_SECRET_KEY='opLh%a#a(8>/;2w?5DDf[S{+P"OeFe}['#os.environ['API_SECRET_KEY']
+API_SECRET_KEY='Bqs5D6k6KhCm9CCvs6WukJCC0IuulCGC1zBHMNEoloE06RTm1DS8kY5Ml3SJsFpP5nrmtthXiQjFHBYhQf8f33t559QZWTSE5dovNarFzoIPOMMnfB8rSFQFcPWn0h68'#os.environ['API_SECRET_KEY']
 
 # Template configuration
 # https://docs.djangoproject.com/en/2.1/topics/templates/
@@ -88,7 +111,7 @@ DATABASES = {
         'NAME': 'therapist_webservice_db_dev', #os.environ['DB_NAME_MAIN'],
         'USER': os.environ['DB_USER'],
         'PASSWORD': os.environ['DB_PASS'],
-        'HOST':os.environ['DB_HOST'],
+        'HOST': '10.0.0.54',#os.environ['DB_HOST'],
         'PORT':os.environ['DB_PORT'],
     },
     'campuspt_db': {
@@ -96,7 +119,7 @@ DATABASES = {
         'NAME': 'campuspt_db_dev',#os.environ['DB_NAME'],
         'USER': os.environ['DB_USER'],
         'PASSWORD': os.environ['DB_PASS'],
-        'HOST':os.environ['DB_HOST'],
+        'HOST': '10.0.0.54',#os.environ['DB_HOST'],
         'PORT':os.environ['DB_PORT'],
     }
 }

@@ -30,11 +30,13 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="app\api\geoService.py" />
     <Compile Include="app\api\therapistInvitationAPI.py" />
     <Compile Include="app\forms.py" />
     <Compile Include="app\models.py" />
     <Compile Include="app\serializers.py" />
     <Compile Include="app\service\therapistInvitationService.py" />
+    <Compile Include="app\service\therapistService.py" />
     <Compile Include="app\tests.py" />
     <Compile Include="app\views.py" />
     <Compile Include="app\__init__.py" />

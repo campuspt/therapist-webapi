@@ -5,7 +5,8 @@ from django.db import transaction
 from django.utils import timezone
 from django.core.paginator import Paginator
 from app.models import Therapist_Invitation
-from therapist_webapi.utils import WebInfo, is_uuid4
+from django.contrib.auth.models import User
+from therapist_webapi.utils import WebInfo, decrypt_secure_uuid, generate_secure_uuid, is_uuid4
 
 
 class TherapistInitationService:
@@ -19,17 +20,21 @@ class TherapistInitationService:
         # if 'email' not in data: raise ValueError('Email is required')
         if 'phone' not in data: raise ValueError('Phone is required')
         if 'company_id' not in data: raise ValueError('Company is required')
-        
+        if 'user_id' not in data: raise ValueError('User id is required')
+        if not User.objects.filter(id=data.get('user_id', None), is_staff=1).exists(): 
+            raise ValueError('Validation: User ID is invalid. Contact to the administrator')
 
+        company_id = data.get('company_id', None)
         
         obj = Therapist_Invitation.objects.create(
+            uuid=generate_secure_uuid({'company_id':company_id}),
+            user_id=data.get('user_id', None),
             first_name=data.get('first_name', None),
             last_name=data.get('last_name', None),
             npi=data.get('npi', None),
-            # email=data.get('email', None),
             phone=data.get('phone', None),
             email=data.get('email', None),
-            company_id=data.get('company_id', None),
+            company_id=company_id,
             sent_at=timezone.now(),
             expires_at=timezone.now() + timedelta(days=7),
             created_at=timezone.now(),
@@ -43,8 +48,13 @@ class TherapistInitationService:
         
     def find(self, search, index:int, size:int, web:WebInfo):
         if search and search.strip() != '':
-            if is_uuid4(search): return Paginator([Therapist_Invitation.objects.filter(uuid=search).first()], size).get_page(1)
-            return Paginator(Therapist_Invitation.objects.filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(npi__icontains=search)), size).get_page(index)
-        
-        return Paginator(Therapist_Invitation.objects.all(), size).get_page(index)
+            if search: 
+                obj = Therapist_Invitation.objects.filter(uuid=search).first()
+                print(obj)
+                if not obj: raise ValueError('Invalid UUID')
+                return obj
+            # return Paginator(Therapist_Invitation.objects.filter(Q(first_name__icontains=search) | Q(last_name__icontains=search) | Q(npi__icontains=search)), size).get_page(index)
+            else:
+                raise ValueError('UUID required')
+        # return Paginator(Therapist_Invitation.objects.all(), size).get_page(index)
             

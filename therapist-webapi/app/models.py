@@ -3,6 +3,7 @@ Definition of models.
 """
 
 import uuid
+from django.contrib.auth.models import User
 from django.db import models
 from django.utils import timezone
 
@@ -58,6 +59,7 @@ class City(models.Model):
     class Meta:
             db_table = "city"
             ordering = ['name']
+            managed = False  # Evita que Django intente migrarla
     
     city_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=45)
@@ -68,6 +70,7 @@ class City(models.Model):
     
     
     class Meta:
+            db_table = "city"
             managed = False  # Evita que Django intente migrarla
             
     def __str__(self) -> str:
@@ -102,6 +105,7 @@ class Contact(models.Model):
     is_fax = models.BooleanField(default=False)
     
     class Meta:
+            db_table = "contact"
             managed = False  # Evita que Django intente migrarla
             
     def __str__(self) -> str:
@@ -127,6 +131,19 @@ class Therapist(Audit_Fields):
     user_id = models.IntegerField()
     company_id = models.IntegerField()
     active = models.BooleanField(default=True)
+
+    
+    @property
+    def locations(self): return Therapist_Location.objects.filter(therapist_id = self.id, visible=1)
+    
+    @property
+    def attributes(self): return Therapist_Attribute.objects.filter(therapist_id = self.id, visible=1)
+    
+    @property
+    def contacts(self): return Therapist_Contact.objects.filter(therapist_id = self.id, visible=1)
+        
+    @property
+    def emails(self): return Therapist_Email.objects.filter(therapist_id = self.id, visible=1)
         
     class Meta:
             db_table = "therapist"
@@ -201,7 +218,8 @@ class Therapist_Invitation(Audit_Fields):
         ('revoked', 'Revoked'),
     ]
     
-    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    uuid = models.CharField(max_length=255,primary_key=True, editable=False)
+    user_id = models.IntegerField()
     first_name = models.CharField(max_length=250)
     last_name = models.CharField(max_length=250)
     npi = models.CharField(max_length=15)
@@ -219,3 +237,6 @@ class Therapist_Invitation(Audit_Fields):
             models.Index(fields=["phone"]),
             models.Index(fields=["status"]),
         ]
+
+    @property
+    def username(self): return User.objects.filter(id = self.user_id).first().username
