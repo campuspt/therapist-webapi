@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db import transaction
 from django.utils import timezone
 from app.api.geoService import GEOService
-from app.models import Contact, Email, Location, Therapist, Therapist_Attribute, Therapist_Contact, Therapist_Email, Therapist_Invitation, Therapist_Location
+from app.models import Contact, Email, Location, Therapist, Therapist_Attribute, Therapist_Contact, Therapist_Email, Therapist_Invitation, Therapist_Location, Therapist_Signature
 
 
 class TherapistService:
@@ -69,6 +69,13 @@ class TherapistService:
                     therapist_id = therapist.id,
                     email_id = Email.objects.create(value=data.get('email', None)).email_id,
                         is_primary=True
+                    )
+                
+                # Therapist Email
+                signature = Therapist_Signature.objects.create(
+                    therapist_id=therapist.id,
+                    signature=data.get('signature', None),
+                    is_primary=True
                     )
                 
                 fax = None
@@ -146,3 +153,5 @@ class TherapistService:
             raise ValueError('Validation: Email is required')
         if not data.get('password', None) or data.get('password', None).strip() == '' or len(data.get('password', None)) < 8: 
             raise ValueError('Validation: Invalid password')
+        if not data.get('signature', None) or data.get('signature', None).strip() == '' or len(data.get('signature', None)) < 10: 
+            raise ValueError('Validation: A valid signature is required')

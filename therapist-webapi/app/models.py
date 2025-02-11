@@ -145,6 +145,9 @@ class Therapist(Audit_Fields):
     @property
     def emails(self): return Therapist_Email.objects.filter(therapist_id = self.id, visible=1)
         
+    @property
+    def signatures(self): return Therapist_Signature.objects.filter(therapist_id = self.id, visible=1)
+        
     class Meta:
             db_table = "therapist"
             managed = False  # Evita que Django intente migrarla
@@ -209,6 +212,18 @@ class Therapist_Email(Audit_Fields):
     @property
     def email(self): return Email.objects.filter(email_id = self.email_id).first()
         
+         
+class Therapist_Signature(Audit_Fields):
+    id = models.AutoField(primary_key=True)
+    therapist_id = models.IntegerField()  
+    signature = models.TextField()  # Store the Base64 string
+    active = models.BooleanField(default=True)
+    is_primary = models.BooleanField(default=False)
+    visible = models.BooleanField(default=True)
+    
+    @property
+    def therapist(self): return Therapist.objects.filter(id = self.therapist_id).first()
+
         
 class Therapist_Invitation(Audit_Fields):
     STATUS_CHOICES = [

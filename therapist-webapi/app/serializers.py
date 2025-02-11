@@ -1,7 +1,7 @@
 from django.utils import timezone
 from rest_framework import serializers
 
-from app.models import Therapist, Therapist_Attribute, Therapist_Contact, Therapist_Email, Therapist_Invitation, Therapist_Location
+from app.models import Therapist, Therapist_Attribute, Therapist_Contact, Therapist_Email, Therapist_Invitation, Therapist_Location, Therapist_Signature
 
 class TherapistInvitationSerializer(serializers.ModelSerializer):
     
@@ -75,6 +75,16 @@ class TherapistEmailSerializer(serializers.ModelSerializer):
 
     def get_email(self, obj): return  obj.email.value
         
+class TherapistSignatureSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Therapist_Signature
+        fields = [
+            'id', 'is_primary','signature','active','created_at', 'created_by', 'update_at', 'updated_by'
+        ]
+
+    def get_email(self, obj): return  obj.email.value
+        
 class TherapistSerializer(serializers.ModelSerializer):
 
     
@@ -82,11 +92,12 @@ class TherapistSerializer(serializers.ModelSerializer):
     contacts = serializers.SerializerMethodField()
     locations = serializers.SerializerMethodField()
     attributes = serializers.SerializerMethodField()
+    signatures = serializers.SerializerMethodField()
 
     class Meta:
         model = Therapist
         fields = [
-            'id', 'name', 'last_name', 'title', 'company_id', 'emails', 'contacts', 'locations', 'attributes','created_at', 'created_by', 'update_at', 'updated_by'
+            'id', 'name', 'last_name', 'title', 'company_id', 'emails', 'contacts', 'locations', 'attributes', 'signatures','created_at', 'created_by', 'update_at', 'updated_by'
         ]
         
     
@@ -94,3 +105,4 @@ class TherapistSerializer(serializers.ModelSerializer):
     def get_contacts(self, obj): return  TherapistContactSerializer(obj.contacts, many=True).data
     def get_locations(self, obj): return  TherapistLocationSerializer(obj.locations, many=True).data
     def get_attributes(self, obj): return  TherapistAttributeSerializer(obj.attributes, many=True).data
+    def get_signatures(self, obj): return  TherapistSignatureSerializer(obj.signatures, many=True).data
