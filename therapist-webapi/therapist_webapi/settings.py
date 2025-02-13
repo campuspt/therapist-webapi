@@ -32,13 +32,8 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'corsheaders',
     'app',
-    # Add your apps here to enable them
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
 ]
 
 # Middleware framework
@@ -53,6 +48,10 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# Define allowed internal IPs (e.g., your server IPs)
+ALLOWED_API_IPS = ["99.47.169.178", "127.0.0.1"]  # Replace with your actual internal IPs
+
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Allow React frontend
@@ -156,3 +155,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 STATIC_URL = '/static/'
 STATIC_ROOT = posixpath.join(*(BASE_DIR.split(os.path.sep) + ['static']))
+
+# SECURE_SSL_REDIRECT = True
+
+USER_ADMIN = 'root'

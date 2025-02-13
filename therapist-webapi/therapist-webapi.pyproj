@@ -30,6 +30,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="app\api\authenticationAPI.py" />
     <Compile Include="app\api\geoService.py" />
     <Compile Include="app\api\therapistInvitationAPI.py" />
     <Compile Include="app\forms.py" />

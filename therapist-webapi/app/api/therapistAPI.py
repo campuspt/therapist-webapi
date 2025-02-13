@@ -10,12 +10,12 @@ import json
 import logging
 from app.models import Contact, Email, Location, Therapist, Therapist_Attribute, Therapist_Contact, Therapist_Email, Therapist_Location
 from therapist_webapi.authentication import APIKeyAuthentication
-
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from therapist_webapi.utils import WebInfo, decrypt_secure_uuid
 
 class TherapistAPI(APIView):
-    authentication_classes = [APIKeyAuthentication]
-    permission_classes = [AllowAny]
+    authentication_classes = [JWTAuthentication]  # Require JWT token
+    permission_classes = [IsAuthenticated]  # Only allow authenticated users
     
     logger = logging.getLogger(__name__)
     therapistService = TherapistService()

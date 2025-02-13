@@ -19,7 +19,8 @@ class TherapistService:
             
             i = self.__get_valid_invitation(uuid)
             
-            ta = Therapist_Attribute.objects.filter(value=search).first()
+            ta = Therapist_Attribute.objects.filter(value=i.npi).first()
+            user = User.objects.filter(username=data.get('username', None)).first()
             therapist = None
             if not ta:
                 # Create therapist
@@ -28,7 +29,7 @@ class TherapistService:
                     last_name=data.get('lastName'),
                     title=data.get('title'),
                     company_id=company_id,
-                    user_id=User.objects.filter(username=data.get('username', None)).first().id
+                    user_id=user.id
                     )
                 # Create therapist attribute NPI
                 npi = att_ptlicense=Therapist_Attribute.objects.create(
@@ -93,14 +94,99 @@ class TherapistService:
                         )
                    
 
-
-                user = User.objects.filter(id=therapist.user_id).first()
                 user.set_password(data.get('password', None))
                 user.save()
                 
                 i.accepted_at = timezone.now()
                 i.update_at = timezone.now()
-                i.updated_by = User.objects.filter(id=therapist.user_id).first().username
+                i.updated_by = user.username
+                i.accepted_at = timezone.now()
+                i.status = 'accepted'
+                i.save()
+                
+                return therapist
+            else:
+                # Create therapist
+                therapist = ta.therapist
+                Therapist.objects.filter(therapist=therapist).update(
+                    name=data.get('firstName'),
+                    last_name=data.get('lastName'),
+                    title=data.get('title'),
+                    company_id=company_id,
+                    user_id=user.id
+                    )
+                # Create therapist attribute NPI
+                npi = att_ptlicense=Therapist_Attribute.objects.filter(type='NPI', therapist=therapist).update(
+                    value=data.get('npi'),
+                    therapist=therapist,
+                    )
+                # Create therapist attribute PT License
+                license = att_ptlicense=Therapist_Attribute.objects.filter(type='STATE_LICENSE', therapist=therapist).update(
+                    value=data.get('license'),
+                    therapist=therapist,
+                    )
+                # Therapist Location
+                Therapist_Location.objects.filter(therapist_id = therapist.id,active=True, is_primary=True).update(active=False)
+                location = Therapist_Location.objects.create(
+                    therapist_id = therapist.id,
+                    location_id = Location.objects.create(
+                        address=data.get('practiceAddress', None),
+                        zip_code=data.get('zip', None),
+                        appartment=data.get('appartment', ''),
+                        city=self.geoService.find_city_by_zip(data.get('zip', None)),
+                        ).location_id,
+                        is_primary=True
+                    )
+                
+                # Therapist Contact
+                Therapist_Contact.objects.filter(therapist_id = therapist.id,active=True, is_primary=True).update(active=False)
+                contact = Therapist_Contact.objects.create(
+                    therapist_id = therapist.id,
+                    contact_id = Contact.objects.create(
+                        contact_name=data.get('firstName') + ' ' + data.get('lastName'),
+                        phone_number=data.get('phone', None),
+                        ).contact_id,
+                        is_primary=True
+                    )
+                
+                # Therapist Email
+                Therapist_Email.objects.filter(therapist_id = therapist.id,active=True, is_primary=True).update(active=False)
+                email = Therapist_Email.objects.create(
+                    therapist_id = therapist.id,
+                    email_id = Email.objects.create(value=data.get('email', None)).email_id,
+                        is_primary=True
+                    )
+                
+                # Therapist Email
+                Therapist_Signature.objects.filter(therapist_id = therapist.id,active=True, is_primary=True).update(active=False)
+                signature = Therapist_Signature.objects.create(
+                    therapist_id=therapist.id,
+                    signature=data.get('signature', None),
+                    is_primary=True
+                    )
+                
+                fax = None
+                
+                # Fax Information
+                if data.get('fax', None):
+                   Therapist_Contact.objects.filter(therapist_id = therapist.id,active=True, is_primary=True).update(active=False)
+                   fax = Therapist_Contact.objects.create(
+                        therapist_id = therapist.id,
+                        contact_id = Contact.objects.create(
+                            contact_name=data.get('firstName') + ' ' + data.get('lastName'),
+                            phone_number=data.get('fax', None),
+                            is_fax=True
+                            ).contact_id,
+                            is_primary=True
+                        )
+                   
+
+                user.set_password(data.get('password', None))
+                user.save()
+                
+                i.accepted_at = timezone.now()
+                i.update_at = timezone.now()
+                i.updated_by = user.username
                 i.accepted_at = timezone.now()
                 i.status = 'accepted'
                 i.save()
