@@ -48,18 +48,18 @@ class TherapistInitationService:
         app_name = "CampusPT App"
         com_name = "Campus Physical Therapy"
 
-        template = f"""
-Hi {obj.first_name} {obj.last_name},
+#         template = f"""
+# Hi {obj.first_name} {obj.last_name},
 
-You’re invited to join {app_name} as a therapist! Click the link below to complete your enrollment and start managing your patients.
+# You’re invited to join {app_name} as a therapist! Click the link below to complete your enrollment and start managing your patients.
 
-Enroll Now [{obj.url}]
+# Enroll Now [{obj.url}]
 
-If you have any questions, feel free to reach out.
+# If you have any questions, feel free to reach out.
 
-Best,
-{com_name}
-"""
+# Best,
+# {com_name}
+# """
         return obj
         
         
