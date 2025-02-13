@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.1/ref/settings/
 """
 
+from datetime import timedelta
 import os
 import posixpath
 
@@ -162,4 +163,9 @@ USER_ADMIN = 'root'
 
 
 REMINDERS_WEBAPI = os.environ['REMINDERS_WEBAPI']
-REGISTRY_WEBAPP = "https://registry.therapist.campusphysicaltherapy.com" #os.environ['REGISTRY_WEBAPP']
+REGISTRY_WEBAPP = "https://therapist.campusphysicaltherapy.com" #os.environ['REGISTRY_WEBAPP']
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),  # Change to 30 minutes
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),  # Change to 7 days
+}

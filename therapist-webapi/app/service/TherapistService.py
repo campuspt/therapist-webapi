@@ -116,15 +116,30 @@ class TherapistService:
                     user_id=user.id
                     )
                 # Create therapist attribute NPI
-                npi = att_ptlicense=Therapist_Attribute.objects.filter(type='NPI', therapist=therapist).update(
-                    value=data.get('npi'),
-                    therapist=therapist,
-                    )
+                if  Therapist_Attribute.objects.filter(type='NPI', therapist=therapist, active=1).exists() == True:
+                    npi = Therapist_Attribute.objects.filter(type='NPI', therapist=therapist).update(
+                        value=data.get('npi'),
+                        therapist=therapist,
+                        )
+                else:
+                    npi = att_ptlicense=Therapist_Attribute.objects.create(
+                        type='NPI',
+                        value=data.get('npi'),
+                        therapist=therapist,
+                        )
+                    
                 # Create therapist attribute PT License
-                license = att_ptlicense=Therapist_Attribute.objects.filter(type='STATE_LICENSE', therapist=therapist).update(
-                    value=data.get('license'),
-                    therapist=therapist,
-                    )
+                if  Therapist_Attribute.objects.filter(type='STATE_LICENSE', therapist=therapist, active=1).exists() == True:
+                    license = Therapist_Attribute.objects.filter(type='STATE_LICENSE', therapist=therapist).update(
+                        value=data.get('license'),
+                        therapist=therapist,
+                        )
+                else:
+                    license = att_ptlicense=Therapist_Attribute.objects.create(
+                        type='STATE_LICENSE',
+                        value=data.get('license'),
+                        therapist=therapist,
+                        )
                 # Therapist Location
                 Therapist_Location.objects.filter(therapist_id = therapist.id,active=True, is_primary=True).update(active=False)
                 location = Therapist_Location.objects.create(
