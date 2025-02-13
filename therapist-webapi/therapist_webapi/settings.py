@@ -50,11 +50,11 @@ MIDDLEWARE = [
 ]
 
 # Define allowed internal IPs (e.g., your server IPs)
-ALLOWED_API_IPS = ["99.47.169.178", "127.0.0.1"]  # Replace with your actual internal IPs
+ALLOWED_API_IPS = ["99.47.169.178", "127.0.0.1", os.environ['NETWORK_SEGMENT']]  # Replace with your actual internal IPs
 
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",  # Allow React frontend
+    os.environ['FRONTEND_WEBAPP_URL'],  # Allow React frontend
 ]
 
 CORS_ALLOW_CREDENTIALS = True  # Allow cookies
@@ -81,7 +81,7 @@ ROOT_URLCONF = 'therapist_webapi.urls'
 ENCRYPT_KEY='xOTMiZhMBTWTR8tWbNkifWcCAlBAiWnAboomokIB3-g='
 
 # API Secret Key
-API_SECRET_KEY='Bqs5D6k6KhCm9CCvs6WukJCC0IuulCGC1zBHMNEoloE06RTm1DS8kY5Ml3SJsFpP5nrmtthXiQjFHBYhQf8f33t559QZWTSE5dovNarFzoIPOMMnfB8rSFQFcPWn0h68'#os.environ['API_SECRET_KEY']
+API_SECRET_KEY=os.environ['API_SECRET_KEY']
 
 # Template configuration
 # https://docs.djangoproject.com/en/2.1/topics/templates/
@@ -107,18 +107,18 @@ WSGI_APPLICATION = 'therapist_webapi.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'therapist_webservice_db_dev', #os.environ['DB_NAME_MAIN'],
+        'NAME': os.environ['DB_NAME_MAIN'],
         'USER': os.environ['DB_USER'],
         'PASSWORD': os.environ['DB_PASS'],
-        'HOST': '10.0.0.54',#os.environ['DB_HOST'],
+        'HOST': os.environ['DB_HOST'],
         'PORT':os.environ['DB_PORT'],
     },
     'campuspt_db': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'campuspt_db_dev',#os.environ['DB_NAME'],
+        'NAME': os.environ['DB_NAME'],
         'USER': os.environ['DB_USER'],
         'PASSWORD': os.environ['DB_PASS'],
-        'HOST': '10.0.0.54',#os.environ['DB_HOST'],
+        'HOST': os.environ['DB_HOST'],
         'PORT':os.environ['DB_PORT'],
     }
 }
@@ -159,3 +159,7 @@ STATIC_ROOT = posixpath.join(*(BASE_DIR.split(os.path.sep) + ['static']))
 # SECURE_SSL_REDIRECT = True
 
 USER_ADMIN = 'root'
+
+
+REMINDERS_WEBAPI = os.environ['REMINDERS_WEBAPI']
+REGISTRY_WEBAPP = "https://registry.therapist.campusphysicaltherapy.com" #os.environ['REGISTRY_WEBAPP']

@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.core.paginator import Paginator
 from app.models import Therapist_Invitation
 from django.contrib.auth.models import User
+from therapist_webapi.settings import REGISTRY_WEBAPP
 from therapist_webapi.utils import WebInfo, decrypt_secure_uuid, generate_secure_uuid, is_uuid4
 
 
@@ -41,8 +42,24 @@ class TherapistInitationService:
             created_by=web.get_username(),
             )
         
-        obj.url = 'https://therapistregistry.campusphysicaltherapy.com?uuid='+ str(obj.uuid)
+        obj.url = f'{REGISTRY_WEBAPP}?uuid='+ str(obj.uuid)
         obj.save()
+        
+        app_name = "CampusPT App"
+        com_name = "Campus Physical Therapy"
+
+        template = f"""
+Hi {obj.first_name} {obj.last_name},
+
+You’re invited to join {app_name} as a therapist! Click the link below to complete your enrollment and start managing your patients.
+
+Enroll Now [{obj.url}]
+
+If you have any questions, feel free to reach out.
+
+Best,
+{com_name}
+"""
         return obj
         
         
