@@ -51,16 +51,16 @@ class TherapistInitationService:
         com_name = "Campus Physical Therapy"
 
         template = f"""
-            Hi {obj.first_name} {obj.last_name},
+Hi {obj.first_name} {obj.last_name},
 
-            You are invited to join {app_name} as a therapist! Click the link below to complete your enrollment and start managing your patients.
+You are invited to join {app_name} as a therapist! Click the link below to complete your enrollment and start managing your patients.
 
-            Enroll Now [{obj.url}]
+Enroll Now [{obj.url}]
 
-            If you have any questions, feel free to reach out.
+If you have any questions, feel free to reach out.
 
-            Best,
-            {com_name}
+Best,
+{com_name}
             """
         self.messageService.send_message(company_id, "TEXT", obj.phone, "Enrollment", template, "usr_therapist_api")
         
