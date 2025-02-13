@@ -162,4 +162,4 @@ USER_ADMIN = 'root'
 
 
 REMINDERS_WEBAPI = os.environ['REMINDERS_WEBAPI']
-REGISTRY_WEBAPP = "https://registry.therapist.campusphysicaltherapy.com" #os.environ['REGISTRY_WEBAPP']
+REGISTRY_WEBAPP = os.environ['FRONTEND_WEBAPP_URL']

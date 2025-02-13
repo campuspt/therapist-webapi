@@ -6,12 +6,14 @@ from django.utils import timezone
 from django.core.paginator import Paginator
 from app.models import Therapist_Invitation
 from django.contrib.auth.models import User
+from app.service.messageService import MessageWebService
 from therapist_webapi.settings import REGISTRY_WEBAPP
 from therapist_webapi.utils import WebInfo, decrypt_secure_uuid, generate_secure_uuid, is_uuid4
 
 
 class TherapistInitationService:
     
+    messageService = MessageWebService()
     
     @transaction.atomic
     def send(self, data, web:WebInfo):
@@ -48,18 +50,20 @@ class TherapistInitationService:
         app_name = "CampusPT App"
         com_name = "Campus Physical Therapy"
 
-#         template = f"""
-# Hi {obj.first_name} {obj.last_name},
+        template = f"""
+            Hi {obj.first_name} {obj.last_name},
 
-# You’re invited to join {app_name} as a therapist! Click the link below to complete your enrollment and start managing your patients.
+            You are invited to join {app_name} as a therapist! Click the link below to complete your enrollment and start managing your patients.
 
-# Enroll Now [{obj.url}]
+            Enroll Now [{obj.url}]
 
-# If you have any questions, feel free to reach out.
+            If you have any questions, feel free to reach out.
 
-# Best,
-# {com_name}
-# """
+            Best,
+            {com_name}
+            """
+        self.messageService.send_message(company_id, "TEXT", obj.phone, "Enrollment", template)
+        
         return obj
         
         
