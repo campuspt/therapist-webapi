@@ -108,7 +108,7 @@ class TherapistService:
             else:
                 # Create therapist
                 therapist = ta.therapist
-                Therapist.objects.filter(therapist=therapist).update(
+                Therapist.objects.filter(id=therapist.id).update(
                     name=data.get('firstName'),
                     last_name=data.get('lastName'),
                     title=data.get('title'),
