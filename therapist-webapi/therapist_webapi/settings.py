@@ -50,11 +50,11 @@ MIDDLEWARE = [
 ]
 
 # Define allowed internal IPs (e.g., your server IPs)
-ALLOWED_API_IPS = ["99.47.169.178", "127.0.0.1", "9.1.9.0/24"]#os.environ['NETWORK_SEGMENT']]  # Replace with your actual internal IPs
+ALLOWED_API_IPS = ["99.47.169.178", "127.0.0.1", os.environ['NETWORK_SEGMENT']]  # Replace with your actual internal IPs
 
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173"#os.environ['FRONTEND_WEBAPP_URL'],  # Allow React frontend
+    os.environ['FRONTEND_WEBAPP_URL'],  # Allow React frontend
 ]
 
 CORS_ALLOW_CREDENTIALS = True  # Allow cookies
@@ -81,7 +81,7 @@ ROOT_URLCONF = 'therapist_webapi.urls'
 ENCRYPT_KEY='xOTMiZhMBTWTR8tWbNkifWcCAlBAiWnAboomokIB3-g='
 
 # API Secret Key
-API_SECRET_KEY="Cwjy6yZH0Easm5TWcZ34OtZL3NCbEQjsEGBJjtxXA04vFA0a7r7XsFOEUH1ojuGkkl1sLJMH6n9nasfUHvPn3uTDfLf1ZL5J0Jg3EUD4aeuoDfzwuTUpYRXmWvBR5tQ8"#os.environ['API_SECRET_KEY']
+API_SECRET_KEY=os.environ['API_SECRET_KEY']
 
 # Template configuration
 # https://docs.djangoproject.com/en/2.1/topics/templates/
@@ -107,7 +107,7 @@ WSGI_APPLICATION = 'therapist_webapi.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': "therapist_webservice_db_dev",#os.environ['DB_NAME_MAIN'],
+        'NAME': os.environ['DB_NAME_MAIN'],
         'USER': os.environ['DB_USER'],
         'PASSWORD': os.environ['DB_PASS'],
         'HOST': os.environ['DB_HOST'],
@@ -115,7 +115,7 @@ DATABASES = {
     },
     'campuspt_db': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': "campuspt_db",#os.environ['DB_NAME'],
+        'NAME': os.environ['DB_NAME'],
         'USER': os.environ['DB_USER'],
         'PASSWORD': os.environ['DB_PASS'],
         'HOST': os.environ['DB_HOST'],
@@ -161,5 +161,5 @@ STATIC_ROOT = posixpath.join(*(BASE_DIR.split(os.path.sep) + ['static']))
 USER_ADMIN = 'root'
 
 
-REMINDERS_WEBAPI = "http://localhost:8001/api/"#os.environ['REMINDERS_WEBAPI']
-REGISTRY_WEBAPP = "https://therapist.campusphysicaltherapy.com" #os.environ['FRONTEND_WEBAPP_URL']
+REMINDERS_WEBAPI = os.environ['REMINDERS_WEBAPI']
+REGISTRY_WEBAPP = "https://registry.therapist.campusphysicaltherapy.com" #os.environ['REGISTRY_WEBAPP']
