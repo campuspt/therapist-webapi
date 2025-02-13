@@ -62,7 +62,7 @@ class TherapistInitationService:
             Best,
             {com_name}
             """
-        self.messageService.send_message(company_id, "TEXT", obj.phone, "Enrollment", template)
+        self.messageService.send_message(company_id, "TEXT", obj.phone, "Enrollment", template, "usr_therapist_api")
         
         return obj
         
