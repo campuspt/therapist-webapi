@@ -1,7 +1,7 @@
 from datetime import datetime
 import requests
 
-from therapist_webapi.settings import REMINDERS_WEBAPI
+from therapist_webapi.settings import API_SECRET_KEY, REMINDERS_WEBAPI
 
 class MessageWebService:
     
@@ -15,7 +15,7 @@ class MessageWebService:
     def send_message(self, company_id, reminder_type, to, title, text, username):
         url = self.__api + f'sent/new/{company_id}/{reminder_type}'
         r = requests.post(url, 
-                         headers={'Content-Type':'application/x-www-form-urlencoded'}, 
+                         headers={'Content-Type':'application/x-www-form-urlencoded', 'X-API-KEY': API_SECRET_KEY}, 
                          data={'username':username, 'to': to, 'title':title, 'text':text})
         if r.status_code == 400:
             raise ValueError(r.content)
