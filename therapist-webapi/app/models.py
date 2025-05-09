@@ -131,6 +131,7 @@ class Therapist(Audit_Fields):
     user_id = models.IntegerField()
     company_id = models.IntegerField()
     active = models.BooleanField(default=True)
+    is_license_applicant = models.BooleanField(default=False)
 
     
     @property
@@ -237,8 +238,8 @@ class Therapist_Invitation(Audit_Fields):
     user_id = models.IntegerField()
     first_name = models.CharField(max_length=250)
     last_name = models.CharField(max_length=250)
-    npi = models.CharField(max_length=15)
-    email = models.CharField(max_length=250)
+    npi = models.CharField(max_length=15, null=True)
+    email = models.CharField(max_length=250, null=True)
     phone = models.CharField(max_length=25)
     url = models.CharField(max_length=5000, null=True)
     company_id = models.IntegerField()

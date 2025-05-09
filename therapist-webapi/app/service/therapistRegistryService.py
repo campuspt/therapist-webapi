@@ -15,7 +15,7 @@ class TherapistInitationService:
     def send(self, data, web:WebInfo):
         if 'first_name' not in data: raise ValueError('First name is required')
         if 'last_name' not in data: raise ValueError('Last name is required')
-        if 'npi' not in data: raise ValueError('NPI is required')
+        # if 'npi' not in data: raise ValueError('NPI is required')
         # if 'email' not in data: raise ValueError('Email is required')
         if 'phone' not in data: raise ValueError('Phone is required')
         if 'company_id' not in data: raise ValueError('Company is required')

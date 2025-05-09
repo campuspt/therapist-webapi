@@ -21,28 +21,33 @@ class TherapistService:
             
             ta = Therapist_Attribute.objects.filter(value=i.npi).first()
             user = User.objects.filter(username=data.get('username', None)).first()
-            therapist = None
-            if not ta:
+            therapist = Therapist.objects.filter(user_id=user.id).first()
+            if not therapist and not ta:
                 # Create therapist
                 therapist = Therapist.objects.create(
                     name=data.get('firstName'),
                     last_name=data.get('lastName'),
                     title=data.get('title'),
                     company_id=company_id,
-                    user_id=user.id
+                    user_id=user.id,
+                    is_license_applicant='PTLA' in data.get('title')
                     )
                 # Create therapist attribute NPI
-                npi = att_ptlicense=Therapist_Attribute.objects.create(
-                    type='NPI',
-                    value=data.get('npi'),
-                    therapist=therapist,
-                    )
+                npi = None
+                if data.get('npi', None):
+                    npi = att_ptlicense=Therapist_Attribute.objects.create(
+                        type='NPI',
+                        value=data.get('npi'),
+                        therapist=therapist,
+                        )
                 # Create therapist attribute PT License
-                license = att_ptlicense=Therapist_Attribute.objects.create(
-                    type='STATE_LICENSE',
-                    value=data.get('license'),
-                    therapist=therapist,
-                    )
+                license = None
+                if data.get('license', None):
+                    license = att_ptlicense=Therapist_Attribute.objects.create(
+                        type='STATE_LICENSE',
+                        value=data.get('license'),
+                        therapist=therapist,
+                        )
                 # Therapist Location
                 location = Therapist_Location.objects.create(
                     therapist_id = therapist.id,
@@ -66,13 +71,14 @@ class TherapistService:
                     )
                 
                 # Therapist Email
-                email = Therapist_Email.objects.create(
-                    therapist_id = therapist.id,
-                    email_id = Email.objects.create(value=data.get('email', None)).email_id,
-                        is_primary=True
-                    )
+                if data.get('email', None):
+                    email = Therapist_Email.objects.create(
+                        therapist_id = therapist.id,
+                        email_id = Email.objects.create(value=data.get('email', None)).email_id,
+                            is_primary=True
+                        )
                 
-                # Therapist Email
+                # Therapist Sginature
                 signature = Therapist_Signature.objects.create(
                     therapist_id=therapist.id,
                     signature=data.get('signature', None),
@@ -107,21 +113,22 @@ class TherapistService:
                 return therapist
             else:
                 # Create therapist
-                therapist = ta.therapist
+                therapist = therapist if therapist else ta.therapist
                 Therapist.objects.filter(id=therapist.id).update(
                     name=data.get('firstName'),
                     last_name=data.get('lastName'),
                     title=data.get('title'),
                     company_id=company_id,
-                    user_id=user.id
+                    user_id=user.id,
+                    is_license_applicant='PTLA' in data.get('title')
                     )
                 # Create therapist attribute NPI
-                if  Therapist_Attribute.objects.filter(type='NPI', therapist=therapist, active=1).exists() == True:
+                if data.get('npi', None) and Therapist_Attribute.objects.filter(type='NPI', therapist=therapist, active=1).exists() == True:
                     npi = Therapist_Attribute.objects.filter(type='NPI', therapist=therapist).update(
                         value=data.get('npi'),
                         therapist=therapist,
                         )
-                else:
+                elif  data.get('npi', None):
                     npi = att_ptlicense=Therapist_Attribute.objects.create(
                         type='NPI',
                         value=data.get('npi'),
@@ -129,12 +136,12 @@ class TherapistService:
                         )
                     
                 # Create therapist attribute PT License
-                if  Therapist_Attribute.objects.filter(type='STATE_LICENSE', therapist=therapist, active=1).exists() == True:
+                if data.get('license', None) and Therapist_Attribute.objects.filter(type='STATE_LICENSE', therapist=therapist, active=1).exists() == True:
                     license = Therapist_Attribute.objects.filter(type='STATE_LICENSE', therapist=therapist).update(
                         value=data.get('license'),
                         therapist=therapist,
                         )
-                else:
+                elif data.get('license', None):
                     license = att_ptlicense=Therapist_Attribute.objects.create(
                         type='STATE_LICENSE',
                         value=data.get('license'),
@@ -240,10 +247,10 @@ class TherapistService:
             raise ValueError('Validation: Last name is required')
         if not data.get('title', None) or data.get('title', None).strip() == '': 
             raise ValueError('Validation: Title is required')
-        if not data.get('npi', None) or data.get('npi', None).strip() == '': 
-            raise ValueError('Validation: NPI is required')
-        if not data.get('license', None) or data.get('license', None).strip() == '': 
-            raise ValueError('Validation: License is required')
+        # if not data.get('npi', None) or data.get('npi', None).strip() == '': 
+        #     raise ValueError('Validation: NPI is required')
+        # if not data.get('license', None) or data.get('license', None).strip() == '': 
+        #     raise ValueError('Validation: License is required')
         if not data.get('practiceAddress', None) or data.get('practiceAddress', None).strip() == '': 
             raise ValueError('Validation: Address is required')
         if not data.get('zip', None) or data.get('zip', None).strip() == '': 
