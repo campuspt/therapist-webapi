@@ -20,6 +20,7 @@ pipeline {
         REMINDERS_WEBAPI = "${params.REMINDERS_WEBAPI}"
         NETWORK_SEGMENT = "${params.NETWORK_SEGMENT}"
         FRONTEND_WEBAPP_URL = "${params.FRONTEND_WEBAPP_URL}"
+        DEBUG = "${params.DEBUG}"
     }
 
     stages {
