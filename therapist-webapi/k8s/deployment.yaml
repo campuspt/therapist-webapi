@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: therapist-webapi
+  labels:
+    app: therapist-webapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: therapist-webapi
+  template:
+    metadata:
+      labels:
+        app: therapist-webapi
+    spec:
+      containers:
+        - name: therapist-webapi
+          # Image gets updated by Jenkins to REGISTRY/therapist-webapi:latest
+          image: k8s-master1.campusphysicaltherapy.com:32000/therapist-webapi:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 20
+          env:
+            - name: DEBUG
+              value: "False"
+            - name: API_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: API_SECRET_KEY
+            - name: DB_NAME_MAIN
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: DB_NAME_MAIN
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: DB_NAME
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: DB_USER
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: DB_PASS
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: DB_HOST
+            - name: DB_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: DB_PORT
+            - name: REMINDERS_WEBAPI
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: REMINDERS_WEBAPI
+            - name: NETWORK_SEGMENT
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: NETWORK_SEGMENT
+            - name: FRONTEND_WEBAPP_URL
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: FRONTEND_WEBAPP_URL

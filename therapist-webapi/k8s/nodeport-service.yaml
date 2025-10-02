@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: therapist-webapi-nodeport
+  labels:
+    app: therapist-webapi
+spec:
+  selector:
+    app: therapist-webapi
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 8000
+      nodePort: 32080  # Must be between 30000–32767
+      protocol: TCP
