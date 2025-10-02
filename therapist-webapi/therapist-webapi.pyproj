@@ -32,6 +32,7 @@
   <ItemGroup>
     <Compile Include="app\api\authenticationAPI.py" />
     <Compile Include="app\api\geoService.py" />
+    <Compile Include="app\api\infoAPI.py" />
     <Compile Include="app\api\therapistInvitationCreation.py" />
     <Compile Include="app\api\therapistInvitationAPI.py" />
     <Compile Include="app\forms.py" />
