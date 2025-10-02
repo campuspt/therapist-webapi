@@ -6,28 +6,23 @@ pipeline {
         APP_NAME = "therapist-webapi"
         IMAGE = "${REGISTRY}/${APP_NAME}:latest"
 
-        // Jenkins environment variables (must be configured in Jenkins -> Manage Credentials or Job Parameters)
+        // Credentials (managed by Jenkins)
         API_SECRET_KEY = credentials('API_SECRET_KEY')
-        DB_NAME_MAIN = credentials('DB_NAME_MAIN')
-        DB_NAME = credentials('DB_NAME')
-        DB_USER = credentials('DB_USER')
-        DB_PASS = credentials('DB_PASS')
-        DB_HOST = credentials('DB_HOST')
-        DB_PORT = "3306"
-        PORT_NUMBER = credentials('PORT_NUMBER')
-        DEBUG = credentials('DEBUG')
-        PROJECT_NAME = credentials('PROJECT_NAME')
-        ENVIROMENT = credentials('ENVIROMENT')
-        REMINDERS_WEBAPI = credentials('REMINDERS_WEBAPI')
-        NETWORK_SEGMENT = credentials('NETWORK_SEGMENT')
-        FRONTEND_WEBAPP_URL = credentials('FRONTEND_WEBAPP_URL')
+        KUBECONFIG_FILE = credentials('KUBECONFIG_FILE')
 
-        // Kubeconfig path (the secret file path stored in Jenkins credentials or env)
-        KUBECONFIG_FILE = "kubeconfig-campuspt"
+        // Parameters (from job config)
+        DB_NAME_MAIN = "${params.DB_NAME_MAIN}"
+        DB_NAME = "${params.DB_NAME}"
+        DB_USER = "${params.DB_USER}"
+        DB_PASS = "${params.DB_PASS}"
+        DB_HOST = "${params.DB_HOST}"
+        DB_PORT = "${params.DB_PORT}"
+        REMINDERS_WEBAPI = "${params.REMINDERS_WEBAPI}"
+        NETWORK_SEGMENT = "${params.NETWORK_SEGMENT}"
+        FRONTEND_WEBAPP_URL = "${params.FRONTEND_WEBAPP_URL}"
     }
 
     stages {
-
         stage('Checkout') {
             steps {
                 echo "[INFO] Checking out source code..."
@@ -54,19 +49,14 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                echo "[INFO] Exporting kubeconfig..."
-                // Note: We assume your Jenkins secret or env already stores the kubeconfig path or file
+                echo "[INFO] Using kubeconfig from Jenkins secret..."
                 sh '''
-                    if [ ! -f "$KUBECONFIG_FILE" ]; then
-                        echo "[ERROR] kubeconfig not found: $KUBECONFIG_FILE"
-                        exit 1
-                    fi
                     export KUBECONFIG=$KUBECONFIG_FILE
-                    echo "[INFO] Using kubeconfig: $KUBECONFIG"
+                    echo "[INFO] Checking cluster access..."
                     kubectl cluster-info
                 '''
 
-                echo "[INFO] Applying Kubernetes Secrets..."
+                echo "[INFO] Creating/Updating Secrets..."
                 sh '''
                     kubectl -n default create secret generic db-secrets \
                       --from-literal=API_SECRET_KEY="${API_SECRET_KEY}" \
@@ -82,7 +72,7 @@ pipeline {
                       --dry-run=client -o yaml | kubectl apply -f -
                 '''
 
-                echo "[INFO] Applying Kubernetes Deployment and Service..."
+                echo "[INFO] Applying Kubernetes manifests..."
                 sh '''
                     kubectl apply -f ${WORKSPACE}/therapist-webapi/k8s/deployment.yaml
                     kubectl apply -f ${WORKSPACE}/therapist-webapi/k8s/service.yaml
@@ -96,10 +86,10 @@ pipeline {
 
     post {
         success {
-            echo "[SUCCESS] Deployment completed successfully "
+            echo "[SUCCESS] Deployment completed successfully!"
         }
         failure {
-            echo "[ERROR] Pipeline failed "
+            echo "[ERROR] Pipeline failed."
         }
     }
 }
