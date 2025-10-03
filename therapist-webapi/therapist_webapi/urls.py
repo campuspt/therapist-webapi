@@ -3,6 +3,7 @@ Definition of urls for therapist_webapi.
 """
 
 from datetime import datetime
+from django.http import JsonResponse
 from django.urls import path
 from django.contrib import admin
 from django.contrib.auth.views import LoginView, LogoutView
@@ -14,7 +15,11 @@ from app.api.therapistInvitationAPI import TherapistInvitationAPI
 from app.api.therapistInvitationCreation import TherapistInvitationCreationAPI
 
 
+def health(request):
+    return JsonResponse({"status": "ok"})
+
 urlpatterns = [
+    path("health", health),
     path('api/auth/', exchange_uuid_for_token, name='auth'),
     path('api/therapist/invitations/creation', TherapistInvitationCreationAPI.as_view(), name='invitations'),
     path('api/therapist/invitations', TherapistInvitationAPI.as_view(), name='invitations'),
