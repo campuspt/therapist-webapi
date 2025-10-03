@@ -70,6 +70,7 @@ pipeline {
                       --from-literal=REMINDERS_WEBAPI="${REMINDERS_WEBAPI}" \
                       --from-literal=NETWORK_SEGMENT="${NETWORK_SEGMENT}" \
                       --from-literal=FRONTEND_WEBAPP_URL="${FRONTEND_WEBAPP_URL}" \
+                      --from-literal=DEBUG="${DEBUG}" \
                       --dry-run=client -o yaml | kubectl apply -f -
                 '''
 

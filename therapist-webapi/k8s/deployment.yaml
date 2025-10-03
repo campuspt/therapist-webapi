@@ -35,7 +35,10 @@ spec:
             periodSeconds: 20
           env:
             - name: DEBUG
-              value: "False"
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: DEBUG
             - name: API_SECRET_KEY
               valueFrom:
                 secretKeyRef:
