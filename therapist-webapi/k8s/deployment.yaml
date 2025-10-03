@@ -17,7 +17,7 @@ spec:
       containers:
         - name: therapist-webapi
           # Image gets updated by Jenkins to REGISTRY/therapist-webapi:latest
-          image: k8s-master1.campusphysicaltherapy.com:32000/therapist-webapi:latest
+          image: registry.campusphysicaltherapy.com/therapist-webapi:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
