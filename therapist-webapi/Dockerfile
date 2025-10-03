@@ -19,7 +19,7 @@ RUN pip install --upgrade pip && pip install -r requirements.txt gunicorn
 COPY . .
 
 # collect static (safe even if no static files yet)
-RUN mkdir -p /static && python manage.py collectstatic --noinput || true
+# RUN mkdir -p /static && python manage.py collectstatic --noinput || true
 
 # create a tiny health endpoint if you don’t have one:
 # (Django will 404 on /health by default; that’s fine for liveness if we use TCP check)
