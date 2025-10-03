@@ -78,7 +78,7 @@ pipeline {
                 sh '''
                     kubectl apply -f ${WORKSPACE}/therapist-webapi/k8s/deployment.yaml
                     kubectl apply -f ${WORKSPACE}/therapist-webapi/k8s/service.yaml
-
+                    kubectl apply -f ${WORKSPACE}/therapist-webapi/k8s/ingress.yaml
                     echo "[INFO] Waiting for rollout..."
                     kubectl rollout status deployment/${APP_NAME} --timeout=180s
                 '''

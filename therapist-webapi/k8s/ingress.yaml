@@ -1,14 +1,15 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: therapist-webapi
+  name: therapist-webapi-ingress
+  namespace: default
   annotations:
-    # Uncomment these if you use ingress-nginx and want SSL redirection, etc.
-    # kubernetes.io/ingress.class: nginx
-    # nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
+  ingressClassName: nginx
   rules:
-    - host: api.campusphysicaltherapy.com   # change to your desired host
+    - host: therapistapi.campusphysicaltherapy.com
       http:
         paths:
           - path: /
@@ -18,8 +19,7 @@ spec:
                 name: therapist-webapi
                 port:
                   number: 80
-  # TLS (optional)
-  # tls:
-  #   - hosts:
-  #       - api.campusphysicaltherapy.com
-  #     secretName: api-tls
+  tls:
+    - hosts:
+        - therapistapi.campusphysicaltherapy.com
+      secretName: therapist-webapi-tls
