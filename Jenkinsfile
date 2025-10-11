@@ -5,6 +5,7 @@ pipeline {
         REGISTRY = "registry.campusphysicaltherapy.com"
         APP_NAME = "therapist-webapi"
         IMAGE = "${REGISTRY}/${APP_NAME}:latest"
+        K8S_NAMESPACE = "${params.ENVIROMENT}"
 
         // Credentials (managed by Jenkins)
         API_SECRET_KEY = credentials('API_SECRET_KEY')
@@ -59,7 +60,7 @@ pipeline {
 
                 echo "[INFO] Creating/Updating Secrets..."
                 sh '''
-                    kubectl -n default create secret generic db-secrets \
+                    kubectl -n ${K8S_NAMESPACE} create secret generic db-secrets-therapist-webapi \
                       --from-literal=API_SECRET_KEY="${API_SECRET_KEY}" \
                       --from-literal=DB_NAME_MAIN="${DB_NAME_MAIN}" \
                       --from-literal=DB_NAME="${DB_NAME}" \
@@ -76,11 +77,11 @@ pipeline {
 
                 echo "[INFO] Applying Kubernetes manifests..."
                 sh '''
-                    kubectl apply -f ${WORKSPACE}/therapist-webapi/k8s/deployment.yaml
-                    kubectl apply -f ${WORKSPACE}/therapist-webapi/k8s/service.yaml
-                    kubectl apply -f ${WORKSPACE}/therapist-webapi/k8s/ingress.yaml
+                    kubectl apply -f ${WORKSPACE}/therapist-webapi/k8s/deployment.yaml -n ${K8S_NAMESPACE}
+                    kubectl apply -f ${WORKSPACE}/therapist-webapi/k8s/service.yaml -n ${K8S_NAMESPACE}
+                    kubectl apply -f ${WORKSPACE}/therapist-webapi/k8s/ingress.yaml -n ${K8S_NAMESPACE}
                     echo "[INFO] Waiting for rollout..."
-                    kubectl rollout status deployment/${APP_NAME} --timeout=180s
+                    kubectl rollout status deployment/${APP_NAME} -n ${K8S_NAMESPACE} --timeout=180s
                 '''
             }
         }
