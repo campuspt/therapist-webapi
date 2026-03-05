@@ -51,7 +51,7 @@ MIDDLEWARE = [
 ]
 
 # Define allowed internal IPs (e.g., your server IPs)
-ALLOWED_API_IPS = ["99.47.169.178", "127.0.0.1", os.environ['NETWORK_SEGMENT']]  # Replace with your actual internal IPs
+ALLOWED_API_IPS = ["99.47.169.178", "127.0.0.1", "10.244.0.0/16", os.environ['NETWORK_SEGMENT']]  # Replace with your actual internal IPs
 
 
 CORS_ALLOWED_ORIGINS = [
