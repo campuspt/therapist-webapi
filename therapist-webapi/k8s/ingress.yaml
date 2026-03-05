@@ -4,6 +4,8 @@ metadata:
   name: therapist-webapi-ingress
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/enable-real-ip: "true"
+    nginx.ingress.kubernetes.io/proxy-real-ip-cidr: "0.0.0.0/0" 
 spec:
   ingressClassName: nginx
   rules:
