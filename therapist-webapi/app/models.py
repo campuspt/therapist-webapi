@@ -103,6 +103,7 @@ class Contact(models.Model):
     phone_number = models.CharField(max_length=14)
     ext = models.CharField(max_length=4, blank=True, null=True)
     is_fax = models.BooleanField(default=False)
+    sms_enabled = models.BooleanField(default=True)
     
     class Meta:
             db_table = "contact"
